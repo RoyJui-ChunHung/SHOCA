@@ -341,7 +341,7 @@ nav {
 /* ── PRODUCT GRID ── */
 .product-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); }
 
-.home-grid-carousel { display: flex; align-items: flex-start; gap: 12px; }
+.home-grid-carousel { display: flex; align-items: center; gap: 12px; }
 #product-grid-home { flex: 1; grid-template-columns: repeat(4,1fr); }
 
 .box-arrow-btn:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
