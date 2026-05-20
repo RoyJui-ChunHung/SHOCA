@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHOCA — Open the Unknown</title>
+  <meta name="description" content="SHOCA is a mystery jewelry blind box brand with a card draw system. Shop Y2K, Healing, Designer, and RARE fine jewelry collections. Every checkout holds the possibility of winning real diamond jewelry.">
+  <meta name="keywords" content="SHOCA, jewelry blind box, mystery jewelry box, card draw jewelry, Y2K jewelry, RARE jewelry, designer jewelry, blind box accessories">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SHOCA — Open the Unknown">
+  <meta property="og:description" content="Mystery jewelry blind boxes × card draw surprises. 1% chance to win real diamond jewelry with every order.">
+  <meta property="og:image" content="https://picsum.photos/seed/shoca_hero/1200/630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SHOCA — Open the Unknown">
+  <meta name="twitter:description" content="Mystery jewelry blind boxes × card draw surprises.">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── MOBILE MENU ── -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <div class="logo" onclick="showPage('home'); closeMobileMenu()">SHOCA</div>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+  </div>
+  <nav class="mobile-nav">
+    <a href="#" onclick="showPage('home'); closeMobileMenu()">Blind Box</a>
+    <a href="#" onclick="showPage('shop'); closeMobileMenu()">Shop</a>
+    <a href="#" onclick="showPage('rare'); closeMobileMenu()">RARE</a>
+    <a href="#" onclick="showPage('draw-info'); closeMobileMenu()">Card Draw</a>
+  </nav>
+  <div class="mobile-nav-footer">
+    <button onclick="toggleAccount(); closeMobileMenu()">Sign In / Register</button>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <button class="hamburger" id="hamburger" onclick="openMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home', this)">Blind Box</a>
+    <a href="#" onclick="showPage('shop', this)">Shop</a>
+    <a href="#" onclick="showPage('rare', this)">RARE</a>
+    <a href="#" onclick="showPage('draw-info', this)">Card Draw</a>
+  </div>
+  <div class="logo" onclick="showPage('home')">SHOCA</div>
+  <div class="nav-right">
+    <button class="nav-icon" onclick="toggleSearch()">Search</button>
+    <button class="nav-icon" onclick="toggleAccount()">Account</button>
+    <button class="nav-icon" onclick="toggleCart()">
+      Bag <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── SEARCH OVERLAY ── -->
+<div class="search-overlay" id="search-overlay">
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search jewelry, series..." oninput="handleSearch(this.value)" autocomplete="off">
+    <button class="search-close" onclick="toggleSearch()">✕</button>
+  </div>
+  <div class="search-results" id="search-results"></div>
+</div>
+
+<!-- ── GLOBAL OVERLAY ── -->
+<div class="overlay" id="overlay" onclick="closeOverlay()"></div>
+
+<!-- ── CART SIDEBAR ── -->
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <span class="cart-header-title">Shopping Bag</span>
+    <button class="nav-icon" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">Your bag is empty</div>
+  </div>
+  <div class="cart-footer" id="cart-footer">
+    <div class="cart-total"><span>Subtotal</span><span id="cart-subtotal">USD $0</span></div>
+    <button class="btn btn-dark" style="width:100%" onclick="openCheckout()">Checkout</button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<div class="page active" id="page-home">
+
+  <div class="banner">Free shipping on orders over USD $50 · One card draw per order · 1% chance to win real diamond jewelry</div>
+
+  <div class="hero">
+    <div class="hero-media">
+      <img src="https://loremflickr.com/1600/1000/jewelry,luxury?lock=100" alt="SHOCA SS26" loading="eager">
+      <div class="hero-veil"></div>
+    </div>
+    <div class="hero-corner-tags">
+      <span class="tag-ghost">Y2K</span>
+      <span class="tag-ghost">Healing</span>
+      <span class="tag-ghost">Designer</span>
+      <span class="tag-ghost">RARE Jewelry</span>
+    </div>
+    <div class="hero-text">
+      <p class="hero-eyebrow">SS26 Collection</p>
+      <h1 class="hero-title">Open the<br><em>Unknown</em></h1>
+      <p class="hero-body">Mystery jewelry boxes × card draw surprises. Every piece is fate — every checkout holds the possibility of something extraordinary.</p>
+      <div class="hero-cta">
+        <button class="btn btn-gold" onclick="showPage('shop')">Shop Blind Boxes</button>
+        <button class="btn btn-outline-light" onclick="showPage('rare')">Discover RARE</button>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">This Season's Drops</h2>
+      <a href="#" class="section-link" onclick="showPage('shop')">View All →</a>
+    </div>
+    <div class="home-grid-carousel">
+      <button class="box-arrow-btn" onclick="homeGridSlide(-1)" aria-label="Previous">&#8592;</button>
+      <div class="product-grid" id="product-grid-home"></div>
+      <button class="box-arrow-btn" onclick="homeGridSlide(1)" aria-label="Next">&#8594;</button>
+    </div>
+    <div class="box-indicators" id="home-grid-indicators"></div>
+  </div>
+
+  <div class="blind-split">
+    <div class="blind-left">
+      <h2 class="blind-title">Choose Your<br><em>Surprise Box</em></h2>
+      <p class="blind-desc">Every blind box has a style theme, but what's inside is up to fate. Three price tiers, three levels of anticipation — always a new surprise.</p>
+      <button class="btn btn-dark" onclick="showPage('shop')">Browse All Boxes</button>
+    </div>
+    <div class="blind-right">
+      <div class="box-carousel">
+        <button class="box-arrow-btn" onclick="boxSlide(-1)" aria-label="Previous">&#8592;</button>
+        <div class="box-grid" id="box-grid">
+          <div class="box-item" onclick="addToCart('Starter Blind Box','USD $22',22)">
+            <span class="box-icon">🎁</span>
+            <span class="box-label">Starter</span>
+            <span class="box-price">USD $22</span>
+          </div>
+          <div class="box-item" onclick="addToCart('Standard Blind Box','USD $32',32)">
+            <span class="box-icon">💎</span>
+            <span class="box-label">Standard</span>
+            <span class="box-price">USD $32</span>
+          </div>
+          <div class="box-item" onclick="addToCart('Luxury Blind Box','USD $40',40)">
+            <span class="box-icon">👑</span>
+            <span class="box-label">Luxury</span>
+            <span class="box-price">USD $40</span>
+          </div>
+          <div class="box-item" onclick="addToCart('Y2K Limited Blind Box','USD $35',35)">
+            <span class="box-icon">⭐</span>
+            <span class="box-label">Y2K Limited</span>
+            <span class="box-price">USD $35</span>
+          </div>
+          <div class="box-item" onclick="addToCart('Noir Designer Blind Box','USD $38',38)">
+            <span class="box-icon">🌙</span>
+            <span class="box-label">Noir Series</span>
+            <span class="box-price">USD $38</span>
+          </div>
+          <div class="box-item coming">
+            <span class="box-icon">＋</span>
+            <span class="box-label">Coming Soon</span>
+          </div>
+        </div>
+        <button class="box-arrow-btn" onclick="boxSlide(1)" aria-label="Next">&#8594;</button>
+      </div>
+      <div class="box-indicators" id="box-indicators"></div>
+    </div>
+  </div>
+
+  <div class="card-section">
+    <div class="card-visual">
+      <svg width="220" height="160" viewBox="0 0 220 160" fill="none">
+        <rect x="20" y="10" width="85" height="130" rx="4" fill="white" stroke="#DDDDDD" stroke-width="0.6"/>
+        <rect x="30" y="20" width="65" height="48" rx="2" fill="#F5F5F5"/>
+        <text x="62" y="50" text-anchor="middle" font-size="24" fill="#CCCCCC" font-family="Georgia">♦</text>
+        <text x="62" y="80" text-anchor="middle" font-size="8" fill="#AAAAAA" font-family="sans-serif" letter-spacing="2">SHOCA</text>
+        <text x="62" y="92" text-anchor="middle" font-size="7" fill="#CCCCCC" font-family="sans-serif" letter-spacing="1">LUCKY CARD</text>
+        <rect x="36" y="116" width="50" height="12" rx="1" fill="#F5F5F5"/>
+        <rect x="115" y="26" width="85" height="130" rx="4" fill="#1a1a1a" stroke="#333" stroke-width="0.6"/>
+        <rect x="123" y="34" width="69" height="50" rx="2" fill="#222"/>
+        <text x="157" y="64" text-anchor="middle" font-size="24" fill="#555" font-family="Georgia">★</text>
+        <text x="157" y="96" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif" letter-spacing="2">SHOCA</text>
+        <text x="157" y="108" text-anchor="middle" font-size="7" fill="#444" font-family="sans-serif" letter-spacing="1">RARE CARD</text>
+        <rect x="131" y="130" width="50" height="12" rx="1" fill="#222"/>
+      </svg>
+    </div>
+    <div class="card-content">
+      <p class="card-eyebrow">Checkout Card Draw</p>
+      <h2 class="card-title">Every Order is<br><em>a Chance</em></h2>
+      <p class="card-desc">After checkout, a card draw triggers automatically. You could win a SHOCA RARE diamond, jade, or ruby piece — shipped with your order.</p>
+      <div class="prob-list">
+        <div class="prob-item"><span class="prob-reward">💎 RARE Grand Prize — Diamond Jewelry</span><span class="prob-pct">1%</span></div>
+        <div class="prob-item"><span class="prob-reward">🏆 Runner-up — Semi-precious Designer Piece</span><span class="prob-pct">5%</span></div>
+        <div class="prob-item"><span class="prob-reward">🎁 Bonus Blind Box</span><span class="prob-pct">15%</span></div>
+        <div class="prob-item"><span class="prob-reward">✨ 10% Off Your Next Order</span><span class="prob-pct">30%</span></div>
+        <div class="prob-item"><span class="prob-reward">🃏 SHOCA Thank-You Card</span><span class="prob-pct">49%</span></div>
+      </div>
+      <button class="btn btn-dark" onclick="showPage('draw-info')">Learn More</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">SHOCA</div>
+        <p class="footer-desc">Mystery jewelry boxes × card draw surprises.<br>Every piece is fate.<br><br>Open the Unknown</p>
+      </div>
+      <div>
+        <p class="footer-head">Shop</p>
+        <div class="footer-links">
+          <a href="#" class="footer-link" onclick="showPage('shop')">Blind Boxes</a>
+          <a href="#" class="footer-link" onclick="showPage('shop')">Y2K Items</a>
+          <a href="#" class="footer-link" onclick="showPage('shop')">Healing Series</a>
+          <a href="#" class="footer-link" onclick="showPage('rare')">RARE Jewelry</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-head">Info</p>
+        <div class="footer-links">
+          <a href="#" class="footer-link" onclick="showPage('draw-info')">Card Draw Rules</a>
+          <a href="#" class="footer-link">Returns & Exchanges</a>
+          <a href="#" class="footer-link">About SHOCA</a>
+          <a href="#" class="footer-link">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-head">Follow Us</p>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Instagram</a>
+          <a href="#" class="footer-link">RedNote</a>
+          <a href="#" class="footer-link">TikTok</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SHOCA. All rights reserved.</span>
+      <span>Privacy · Terms · Cookies</span>
+    </div>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ SHOP PAGE ═══════════════ -->
+<div class="page" id="page-shop">
+  <div class="section">
+    <div class="section-header" style="margin-bottom:24px">
+      <h1 class="section-title" style="font-size:clamp(32px,5vw,48px)">All Products</h1>
+    </div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" onclick="filterProducts('all', this)">All</button>
+      <button class="filter-btn" onclick="filterProducts('y2k', this)">Y2K</button>
+      <button class="filter-btn" onclick="filterProducts('healing', this)">Healing</button>
+      <button class="filter-btn" onclick="filterProducts('designer', this)">Designer</button>
+      <button class="filter-btn" onclick="filterProducts('luxury', this)">Luxury</button>
+    </div>
+    <div class="product-grid" id="product-grid-shop"></div>
+    <p class="no-results" id="no-results" style="display:none">No products found</p>
+  </div>
+  <footer class="mini-footer">
+    <div class="footer-bottom"><span>© 2026 SHOCA. All rights reserved.</span></div>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ RARE PAGE ═══════════════ -->
+<div class="page" id="page-rare">
+  <div class="rare-hero">
+    <p class="rare-eyebrow">SHOCA RARE Collection</p>
+    <h1 class="rare-title">RARE</h1>
+    <p class="rare-sub">Diamonds, jade, rubies. Each piece is a treasure worth keeping — and the miracle that might arrive with your next card draw.</p>
+    <button class="btn-light" onclick="showPage('draw-info')">Learn About Card Draw</button>
+  </div>
+  <div class="rare-dark">
+    <div class="rare-grid">
+      <div class="rare-card" onclick="addToCart('Diamond Solitaire Ring','USD $195',195)">
+        <div class="rare-img">
+          <img src="https://loremflickr.com/400/530/diamond,ring?lock=21" alt="Diamond Solitaire Ring">
+        </div>
+        <div class="rare-info">
+          <span class="rare-badge">Diamond</span>
+          <p class="rare-name">Diamond Solitaire Ring</p>
+          <p class="rare-price">USD $195</p>
+        </div>
+      </div>
+      <div class="rare-card" onclick="addToCart('Jade Pendant Necklace','USD $210',210)">
+        <div class="rare-img">
+          <img src="https://loremflickr.com/400/530/jade,necklace?lock=22" alt="Jade Pendant Necklace">
+        </div>
+        <div class="rare-info">
+          <span class="rare-badge">Grade-A Jade</span>
+          <p class="rare-name">Jade Pendant Necklace</p>
+          <p class="rare-price">USD $210</p>
+        </div>
+      </div>
+      <div class="rare-card" onclick="addToCart('Ruby Drop Earrings','USD $185',185)">
+        <div class="rare-img">
+          <img src="https://loremflickr.com/400/530/ruby,earrings?lock=23" alt="Ruby Drop Earrings">
+        </div>
+        <div class="rare-info">
+          <span class="rare-badge">Ruby</span>
+          <p class="rare-name">Ruby Drop Earrings</p>
+          <p class="rare-price">USD $185</p>
+        </div>
+      </div>
+    </div>
+    <div class="rare-footer-note">
+      <p class="rare-footer-label">RARE pieces also serve as card draw prize pool</p>
+      <p class="rare-footer-title">Every checkout — 1% chance at a miracle</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ DRAW INFO PAGE ═══════════════ -->
+<div class="page" id="page-draw-info">
+  <div class="section draw-info-section">
+    <h1 class="draw-info-title">Card Draw<br><em>Explained</em></h1>
+    <p class="draw-info-body">After every order is placed, SHOCA automatically triggers one card draw. Results appear instantly on the order confirmation page, and any prize jewelry ships together with your order.</p>
+    <h2 class="draw-info-sub">Probability Disclosure</h2>
+    <table class="prob-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Prize</th>
+          <th style="text-align:right">Odds</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>💎 SSR</td><td>RARE Grand Prize — Diamond / Jade Jewelry</td><td style="text-align:right">1%</td></tr>
+        <tr><td>🏆 SR+</td><td>RARE Runner-up — Semi-precious Designer Piece</td><td style="text-align:right">5%</td></tr>
+        <tr><td>🎁 SR</td><td>Bonus Random Blind Box</td><td style="text-align:right">15%</td></tr>
+        <tr><td>✨ R</td><td>10% Off Your Next Order</td><td style="text-align:right">30%</td></tr>
+        <tr><td>🃏 N</td><td>SHOCA Limited-Edition Thank-You Card</td><td style="text-align:right">49%</td></tr>
+      </tbody>
+    </table>
+    <h2 class="draw-info-sub">Terms & Rules</h2>
+    <ul class="draw-rules">
+      <li>One card draw per valid order — no minimum spend required</li>
+      <li>RARE Grand Prize has a monthly cap; once reached it automatically downgrades to Runner-up</li>
+      <li>Prize jewelry ships with your order at no extra cost</li>
+      <li>All draw results are generated by a certified random system</li>
+      <li>Winners are announced monthly on our website and social media</li>
+    </ul>
+    <div class="draw-cta-box">
+      <p class="draw-cta-title">Ready to try your luck?</p>
+      <p class="draw-cta-body">Pick a blind box now — the draw happens at checkout.</p>
+      <button class="btn btn-dark" onclick="showPage('shop')">Shop Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ ACCOUNT MODAL ═══════════════ -->
+<div class="modal-bg" id="account-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAccount()">✕</button>
+    <div class="account-tabs">
+      <button class="account-tab active" id="tab-btn-login" onclick="switchTab('login')">Sign In</button>
+      <button class="account-tab" id="tab-btn-register" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="tab-login">
+      <form onsubmit="return false">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-dark form-submit">Sign In</button>
+        <p class="form-hint">Forgot your password?</p>
+      </form>
+    </div>
+    <div id="tab-register" style="display:none">
+      <form onsubmit="return false">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="At least 8 characters">
+        </div>
+        <button type="submit" class="btn btn-dark form-submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════ CHECKOUT MODAL ═══════════════ -->
+<div class="modal-bg" id="checkout-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCheckout()">✕</button>
+    <h2 class="modal-title">Checkout</h2>
+    <p class="modal-sub">After payment, you'll receive one card draw — your chance at a RARE prize.</p>
+    <div id="modal-items"></div>
+    <div class="modal-total"><span>Total</span><span id="modal-total">USD $0</span></div>
+    <button class="btn btn-dark modal-btn" onclick="triggerDraw()">Confirm & Draw</button>
+  </div>
+</div>
+
+
+<!-- ═══════════════ DRAW SCREEN ═══════════════ -->
+<div class="draw-screen" id="draw-screen">
+  <div class="draw-logo">SHOCA</div>
+  <p class="draw-text" id="draw-text">Tap the card to reveal your fate</p>
+  <div class="card-wrap">
+    <div class="card-3d" id="card-3d" onclick="flipCard()">
+      <div class="card-face card-back">
+        <div class="card-back-pattern"></div>
+        <div class="card-back-logo">S</div>
+      </div>
+      <div class="card-face card-front" id="card-front">
+        <p class="card-front-top">SHOCA LUCKY CARD</p>
+        <div class="card-result-icon" id="result-icon">🎁</div>
+        <p class="card-result-name" id="result-name">Thank-You Card</p>
+        <p class="card-result-sub" id="result-sub">Thank you for your support</p>
+      </div>
+    </div>
+  </div>
+  <p class="draw-hint" id="draw-hint">Tap to flip</p>
+  <p class="draw-result-msg" id="draw-result-msg"></p>
+  <button class="draw-close" id="draw-close" onclick="closeDraw()">Continue Shopping</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
