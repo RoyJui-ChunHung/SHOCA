@@ -45,10 +45,10 @@ const products = [
 
 /* ── PRIZES ── */
 const prizes = [
-  { tier: 'ssr',     chance: 1,  icon: '💎', name: 'RARE Grand Prize',  sub: 'Diamond / Jade Jewelry',         msg: 'Congratulations! You won the RARE Grand Prize!',    particles: { color: '#FFD700', count: 28 } },
-  { tier: 'sr-plus', chance: 5,  icon: '🏆', name: 'RARE Runner-up',    sub: 'Semi-precious Designer Piece',   msg: 'You\'re so lucky — RARE Runner-up is yours!',       particles: { color: '#B8A0FF', count: 20 } },
-  { tier: 'sr',      chance: 15, icon: '🎁', name: 'Bonus Blind Box',   sub: 'One random jewelry blind box',   msg: 'Bonus blind box! The surprises keep coming!',       particles: { color: '#80CFFF', count: 12 } },
-  { tier: 'r',       chance: 30, icon: '✨', name: '10% Off Coupon',    sub: 'Valid on your next order',        msg: '10% off coupon sent to your account!',              particles: null },
+  { tier: 'ssr',     chance: 1,  icon: '♠', name: 'RARE Grand Prize',  sub: 'Diamond / Jade Jewelry',         msg: 'Congratulations! You won the RARE Grand Prize!',    particles: { color: '#FFD700', count: 28 } },
+  { tier: 'sr-plus', chance: 5,  icon: '♥', name: 'RARE Runner-up',    sub: 'Semi-precious Designer Piece',   msg: 'You\'re so lucky — RARE Runner-up is yours!',       particles: { color: '#c0392b', count: 20 } },
+  { tier: 'sr',      chance: 15, icon: '♦', name: 'Bonus Blind Box',   sub: 'One random jewelry blind box',   msg: 'Bonus blind box! The surprises keep coming!',       particles: { color: '#80CFFF', count: 12 } },
+  { tier: 'r',       chance: 30, icon: '♣', name: '10% Off Coupon',    sub: 'Valid on your next order',        msg: '10% off coupon sent to your account!',              particles: null },
   { tier: 'n',       chance: 49, icon: '🃏', name: 'Thank-You Card',    sub: 'SHOCA limited-edition design',   msg: 'Thank you! Hope to see you again soon.',            particles: null }
 ];
 
@@ -114,6 +114,19 @@ function showPage(id, linkEl) {
   window.scrollTo(0, 0);
 
   if (id === 'shop') renderProducts('product-grid-shop', currentFilter);
+}
+
+
+/* ══════════════════════════════════════
+   CATEGORY SHORTCUT
+══════════════════════════════════════ */
+function goToCategory(category) {
+  showPage('shop');
+  currentFilter = category;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim().toLowerCase() === category);
+  });
+  renderProducts('product-grid-shop', category);
 }
 
 
@@ -459,18 +472,20 @@ function updateBoxCarousel() {
 let lastSparkle = 0;
 
 function spawnCursorSparkle(x, y) {
-  const el = document.createElement('div');
+  const suits = ['♠', '♥', '♦', '♣'];
+  const isRed  = (s) => s === '♥' || s === '♦';
+  const suit   = suits[Math.floor(Math.random() * suits.length)];
+  const size   = 11 + Math.random() * 8;
+  const el     = document.createElement('div');
   el.className = 'cursor-sparkle';
-  const size = 7 + Math.random() * 10;
+  el.textContent = suit;
   el.style.cssText = `
     left:${x}px; top:${y}px;
-    width:${size}px; height:${size}px;
+    font-size:${size.toFixed(0)}px;
     margin-left:${-size / 2}px; margin-top:${-size / 2}px;
-    --dur:${(0.45 + Math.random() * 0.35).toFixed(2)}s;
+    color:${isRed(suit) ? '#c0392b' : '#c9a96e'};
+    --dur:${(0.5 + Math.random() * 0.35).toFixed(2)}s;
   `;
-  el.innerHTML = `<svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5 0 L5.7 4.3 L10 5 L5.7 5.7 L5 10 L4.3 5.7 L0 5 L4.3 4.3 Z" fill="#c9a96e"/>
-  </svg>`;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 900);
 }

@@ -88,7 +88,13 @@
 <!-- ═══════════════ HOME PAGE ═══════════════ -->
 <div class="page active" id="page-home">
 
-  <div class="banner">Free shipping on orders over USD $50 · One card draw per order · 1% chance to win real diamond jewelry</div>
+  <div class="banner">
+    Free shipping on orders over USD $50
+    <span class="banner-sep">♦</span>
+    One card draw per order
+    <span class="banner-sep">♦</span>
+    1% chance to win real diamond jewelry
+  </div>
 
   <div class="hero">
     <div class="hero-media">
@@ -96,10 +102,10 @@
       <div class="hero-veil"></div>
     </div>
     <div class="hero-corner-tags">
-      <span class="tag-ghost">Y2K</span>
-      <span class="tag-ghost">Healing</span>
-      <span class="tag-ghost">Designer</span>
-      <span class="tag-ghost">RARE Jewelry</span>
+      <button class="tag-ghost" onclick="goToCategory('y2k')">Y2K</button>
+      <button class="tag-ghost" onclick="goToCategory('healing')">Healing</button>
+      <button class="tag-ghost" onclick="goToCategory('designer')">Designer</button>
+      <button class="tag-ghost" onclick="showPage('rare')">RARE Jewelry</button>
     </div>
     <div class="hero-text">
       <p class="hero-eyebrow">SS26 Collection</p>
@@ -183,7 +189,7 @@
         <rect x="36" y="116" width="50" height="12" rx="1" fill="#F5F5F5"/>
         <rect x="115" y="26" width="85" height="130" rx="4" fill="#1a1a1a" stroke="#333" stroke-width="0.6"/>
         <rect x="123" y="34" width="69" height="50" rx="2" fill="#222"/>
-        <text x="157" y="64" text-anchor="middle" font-size="24" fill="#555" font-family="Georgia">★</text>
+        <text x="157" y="64" text-anchor="middle" font-size="24" fill="#666" font-family="Georgia">♠</text>
         <text x="157" y="96" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif" letter-spacing="2">SHOCA</text>
         <text x="157" y="108" text-anchor="middle" font-size="7" fill="#444" font-family="sans-serif" letter-spacing="1">RARE CARD</text>
         <rect x="131" y="130" width="50" height="12" rx="1" fill="#222"/>
@@ -199,6 +205,29 @@
         <div class="prob-item"><span class="prob-reward">🎁 Bonus Blind Box</span><span class="prob-pct">15%</span></div>
         <div class="prob-item"><span class="prob-reward">✨ 10% Off Your Next Order</span><span class="prob-pct">30%</span></div>
         <div class="prob-item"><span class="prob-reward">🃏 SHOCA Thank-You Card</span><span class="prob-pct">49%</span></div>
+      </div>
+      <div class="suit-legend">
+        <p class="suit-legend-title">Suit Guide</p>
+        <div class="suit-legend-row">
+          <span class="suit-legend-icon suit-black">♠</span>
+          <span class="suit-legend-label">SSR — RARE Grand Prize</span>
+        </div>
+        <div class="suit-legend-row">
+          <span class="suit-legend-icon suit-red">♥</span>
+          <span class="suit-legend-label">SR+ — Runner-up</span>
+        </div>
+        <div class="suit-legend-row">
+          <span class="suit-legend-icon suit-red">♦</span>
+          <span class="suit-legend-label">SR — Bonus Blind Box</span>
+        </div>
+        <div class="suit-legend-row">
+          <span class="suit-legend-icon suit-black">♣</span>
+          <span class="suit-legend-label">R — 10% Off Coupon</span>
+        </div>
+        <div class="suit-legend-row">
+          <span class="suit-legend-icon">🃏</span>
+          <span class="suit-legend-label">N — Thank-You Card</span>
+        </div>
       </div>
       <button class="btn btn-dark" onclick="showPage('draw-info')">Learn More</button>
     </div>
@@ -338,6 +367,29 @@
         <tr><td>🃏 N</td><td>SHOCA Limited-Edition Thank-You Card</td><td style="text-align:right">49%</td></tr>
       </tbody>
     </table>
+    <h2 class="draw-info-sub">Suit Guide</h2>
+    <div class="suit-legend suit-legend--wide">
+      <div class="suit-legend-row">
+        <span class="suit-legend-icon suit-black">♠</span>
+        <span class="suit-legend-label">SSR — RARE Grand Prize (Diamond / Jade Jewelry)</span>
+      </div>
+      <div class="suit-legend-row">
+        <span class="suit-legend-icon suit-red">♥</span>
+        <span class="suit-legend-label">SR+ — Runner-up (Semi-precious Designer Piece)</span>
+      </div>
+      <div class="suit-legend-row">
+        <span class="suit-legend-icon suit-red">♦</span>
+        <span class="suit-legend-label">SR — Bonus Blind Box</span>
+      </div>
+      <div class="suit-legend-row">
+        <span class="suit-legend-icon suit-black">♣</span>
+        <span class="suit-legend-label">R — 10% Off Coupon</span>
+      </div>
+      <div class="suit-legend-row">
+        <span class="suit-legend-icon">🃏</span>
+        <span class="suit-legend-label">N — SHOCA Thank-You Card</span>
+      </div>
+    </div>
     <h2 class="draw-info-sub">Terms & Rules</h2>
     <ul class="draw-rules">
       <li>One card draw per valid order — no minimum spend required</li>
