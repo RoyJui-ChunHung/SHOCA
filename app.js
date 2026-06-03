@@ -467,6 +467,50 @@ function updateBoxCarousel() {
 
 
 /* ══════════════════════════════════════
+   DEMO DRAW
+══════════════════════════════════════ */
+let demoFlipped = false;
+
+function demoFlip() {
+  if (demoFlipped) return;
+  demoFlipped = true;
+
+  document.getElementById('demo-card').classList.add('flipped');
+  document.getElementById('demo-hint').classList.add('hidden');
+
+  const roll = Math.random() * 100;
+  let cum = 0, prize = prizes[prizes.length - 1];
+  for (const p of prizes) { cum += p.chance; if (roll < cum) { prize = p; break; } }
+
+  const iconEl = document.getElementById('demo-icon');
+  iconEl.textContent = prize.icon;
+  iconEl.style.color = ['♥','♦'].includes(prize.icon) ? '#b83232'
+                      : ['♠','♣'].includes(prize.icon) ? '#0a0a0a' : '';
+
+  document.getElementById('demo-name').textContent = prize.name;
+  document.getElementById('demo-sub').textContent  = prize.sub;
+
+  setTimeout(() => {
+    document.getElementById('demo-msg').textContent = prize.msg;
+    document.getElementById('demo-actions').style.display = 'flex';
+  }, 1200);
+}
+
+function demoReset() {
+  demoFlipped = false;
+  document.getElementById('demo-card').classList.remove('flipped');
+  document.getElementById('demo-hint').classList.remove('hidden');
+  document.getElementById('demo-msg').textContent = '';
+  document.getElementById('demo-actions').style.display = 'none';
+  const iconEl = document.getElementById('demo-icon');
+  iconEl.textContent = '';
+  iconEl.style.color = '';
+  document.getElementById('demo-name').textContent = '';
+  document.getElementById('demo-sub').textContent  = '';
+}
+
+
+/* ══════════════════════════════════════
    CURSOR SPARKLE
 ══════════════════════════════════════ */
 let lastSparkle = 0;

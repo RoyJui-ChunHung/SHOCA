@@ -199,13 +199,22 @@
       <p class="card-eyebrow">Checkout Card Draw</p>
       <h2 class="card-title">Every Order is<br><em>a Chance</em></h2>
       <p class="card-desc">After checkout, a card draw triggers automatically. You could win a SHOCA RARE diamond, jade, or ruby piece — shipped with your order.</p>
-      <div class="prob-list">
-        <div class="prob-item"><span class="prob-reward">💎 RARE Grand Prize — Diamond Jewelry</span><span class="prob-pct">1%</span></div>
-        <div class="prob-item"><span class="prob-reward">🏆 Runner-up — Semi-precious Designer Piece</span><span class="prob-pct">5%</span></div>
-        <div class="prob-item"><span class="prob-reward">🎁 Bonus Blind Box</span><span class="prob-pct">15%</span></div>
-        <div class="prob-item"><span class="prob-reward">✨ 10% Off Your Next Order</span><span class="prob-pct">30%</span></div>
-        <div class="prob-item"><span class="prob-reward">🃏 SHOCA Thank-You Card</span><span class="prob-pct">49%</span></div>
+
+      <div class="how-steps">
+        <div class="how-step">
+          <span class="how-num">01</span>
+          <span class="how-text">Choose your blind box</span>
+        </div>
+        <div class="how-step">
+          <span class="how-num">02</span>
+          <span class="how-text">Complete checkout</span>
+        </div>
+        <div class="how-step">
+          <span class="how-num">03</span>
+          <span class="how-text">Flip the card — fate decides</span>
+        </div>
       </div>
+
       <div class="suit-legend">
         <p class="suit-legend-title">Suit Guide</p>
         <div class="suit-legend-row">
@@ -347,62 +356,79 @@
 
 <!-- ═══════════════ DRAW INFO PAGE ═══════════════ -->
 <div class="page" id="page-draw-info">
-  <div class="section draw-info-section">
-    <h1 class="draw-info-title">Card Draw<br><em>Explained</em></h1>
-    <p class="draw-info-body">After every order is placed, SHOCA automatically triggers one card draw. Results appear instantly on the order confirmation page, and any prize jewelry ships together with your order.</p>
-    <h2 class="draw-info-sub">Probability Disclosure</h2>
-    <table class="prob-table">
-      <thead>
-        <tr>
-          <th>Tier</th>
-          <th>Prize</th>
-          <th style="text-align:right">Odds</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>💎 SSR</td><td>RARE Grand Prize — Diamond / Jade Jewelry</td><td style="text-align:right">1%</td></tr>
-        <tr><td>🏆 SR+</td><td>RARE Runner-up — Semi-precious Designer Piece</td><td style="text-align:right">5%</td></tr>
-        <tr><td>🎁 SR</td><td>Bonus Random Blind Box</td><td style="text-align:right">15%</td></tr>
-        <tr><td>✨ R</td><td>10% Off Your Next Order</td><td style="text-align:right">30%</td></tr>
-        <tr><td>🃏 N</td><td>SHOCA Limited-Edition Thank-You Card</td><td style="text-align:right">49%</td></tr>
-      </tbody>
-    </table>
-    <h2 class="draw-info-sub">Suit Guide</h2>
-    <div class="suit-legend suit-legend--wide">
-      <div class="suit-legend-row">
-        <span class="suit-legend-icon suit-black">♠</span>
-        <span class="suit-legend-label">SSR — RARE Grand Prize (Diamond / Jade Jewelry)</span>
-      </div>
-      <div class="suit-legend-row">
-        <span class="suit-legend-icon suit-red">♥</span>
-        <span class="suit-legend-label">SR+ — Runner-up (Semi-precious Designer Piece)</span>
-      </div>
-      <div class="suit-legend-row">
-        <span class="suit-legend-icon suit-red">♦</span>
-        <span class="suit-legend-label">SR — Bonus Blind Box</span>
-      </div>
-      <div class="suit-legend-row">
-        <span class="suit-legend-icon suit-black">♣</span>
-        <span class="suit-legend-label">R — 10% Off Coupon</span>
-      </div>
-      <div class="suit-legend-row">
-        <span class="suit-legend-icon">🃏</span>
-        <span class="suit-legend-label">N — SHOCA Thank-You Card</span>
+  <div class="draw-info-wrap">
+
+    <div class="draw-info-left">
+      <h1 class="draw-info-title">Card Draw<br><em>Explained</em></h1>
+      <p class="draw-info-body">After every order is placed, SHOCA automatically triggers one card draw. Results appear instantly on the order confirmation page, and any prize jewelry ships together with your order.</p>
+      <h2 class="draw-info-sub">Probability Disclosure</h2>
+      <table class="prob-table">
+        <thead>
+          <tr>
+            <th>Suit</th>
+            <th>Prize</th>
+            <th style="text-align:right">Odds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="suit-black" style="font-family:Georgia">♠</span> SSR</td><td>RARE Grand Prize — Diamond / Jade Jewelry</td><td style="text-align:right">1%</td></tr>
+          <tr><td><span class="suit-red" style="font-family:Georgia">♥</span> SR+</td><td>RARE Runner-up — Semi-precious Designer Piece</td><td style="text-align:right">5%</td></tr>
+          <tr><td><span class="suit-red" style="font-family:Georgia">♦</span> SR</td><td>Bonus Random Blind Box</td><td style="text-align:right">15%</td></tr>
+          <tr><td><span class="suit-black" style="font-family:Georgia">♣</span> R</td><td>10% Off Your Next Order</td><td style="text-align:right">30%</td></tr>
+          <tr><td>🃏 N</td><td>SHOCA Limited-Edition Thank-You Card</td><td style="text-align:right">49%</td></tr>
+        </tbody>
+      </table>
+      <h2 class="draw-info-sub">Terms & Rules</h2>
+      <ul class="draw-rules">
+        <li>One card draw per valid order — no minimum spend required</li>
+        <li>RARE Grand Prize has a monthly cap; once reached it automatically downgrades to Runner-up</li>
+        <li>Prize jewelry ships with your order at no extra cost</li>
+        <li>All draw results are generated by a certified random system</li>
+        <li>Winners are announced monthly on our website and social media</li>
+      </ul>
+      <div class="draw-cta-box">
+        <p class="draw-cta-title">Ready to try your luck?</p>
+        <p class="draw-cta-body">Pick a blind box now — the draw happens at checkout.</p>
+        <button class="btn btn-dark" onclick="showPage('shop')">Shop Now</button>
       </div>
     </div>
-    <h2 class="draw-info-sub">Terms & Rules</h2>
-    <ul class="draw-rules">
-      <li>One card draw per valid order — no minimum spend required</li>
-      <li>RARE Grand Prize has a monthly cap; once reached it automatically downgrades to Runner-up</li>
-      <li>Prize jewelry ships with your order at no extra cost</li>
-      <li>All draw results are generated by a certified random system</li>
-      <li>Winners are announced monthly on our website and social media</li>
-    </ul>
-    <div class="draw-cta-box">
-      <p class="draw-cta-title">Ready to try your luck?</p>
-      <p class="draw-cta-body">Pick a blind box now — the draw happens at checkout.</p>
-      <button class="btn btn-dark" onclick="showPage('shop')">Shop Now</button>
+
+    <div class="draw-info-right">
+      <p class="draw-right-label">Free Trial Draw</p>
+      <p class="draw-right-desc">Experience the draw before you buy.<br>No purchase needed.</p>
+
+      <div class="demo-card-wrap">
+        <div class="demo-card-3d" id="demo-card" onclick="demoFlip()">
+          <div class="demo-card-face demo-card-back">
+            <div class="demo-back-frame">
+              <span class="demo-back-corner demo-back-tl">♠</span>
+              <span class="demo-back-corner demo-back-tr suit-red">♥</span>
+              <div class="demo-back-center">
+                <div class="demo-back-diamond">♦</div>
+                <div class="demo-back-brand">SHOCA</div>
+                <div class="demo-back-tagline">Open the Unknown</div>
+              </div>
+              <span class="demo-back-corner demo-back-bl suit-red">♦</span>
+              <span class="demo-back-corner demo-back-br">♣</span>
+            </div>
+          </div>
+          <div class="demo-card-face demo-card-front">
+            <p class="demo-card-top">SHOCA LUCKY CARD</p>
+            <div class="demo-result-icon" id="demo-icon"></div>
+            <p class="demo-result-name" id="demo-name"></p>
+            <p class="demo-result-sub" id="demo-sub"></p>
+          </div>
+        </div>
+      </div>
+
+      <p class="demo-hint" id="demo-hint">Tap the card to reveal</p>
+      <p class="demo-result-msg" id="demo-msg"></p>
+      <div class="demo-actions" id="demo-actions" style="display:none">
+        <button class="demo-reset-btn" onclick="demoReset()">Try Again</button>
+        <button class="btn btn-gold" onclick="showPage('shop')">Shop Now</button>
+      </div>
     </div>
+
   </div>
 </div>
 
