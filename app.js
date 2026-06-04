@@ -3,42 +3,42 @@ const products = [
   {
     id: 1, name: 'Y2K Metal Blind Box Vol.1', series: 'Y2K Series',
     price: 'USD $38', amount: 38, category: 'y2k', badge: 'Blind Box',
-    img: 'https://loremflickr.com/400/530/jewelry,silver?lock=1'
+    img: 'https://images.pexels.com/photos/16109264/pexels-photo-16109264.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 2, name: 'Healing Planet Series', series: 'Healing',
     price: 'USD $25', amount: 25, category: 'healing', badge: 'New',
-    img: 'https://loremflickr.com/400/530/crystal,necklace?lock=2'
+    img: 'https://images.pexels.com/photos/4040611/pexels-photo-4040611.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 3, name: 'Dark Designer Series', series: 'Designer',
     price: 'USD $40', amount: 40, category: 'designer', badge: '',
-    img: 'https://loremflickr.com/400/530/gold,jewelry?lock=3'
+    img: 'https://images.pexels.com/photos/8105129/pexels-photo-8105129.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 4, name: 'Dream Bubble Series', series: 'Healing',
     price: 'USD $32', amount: 32, category: 'healing', badge: 'Limited',
-    img: 'https://loremflickr.com/400/530/pearl,necklace?lock=4'
+    img: 'https://images.pexels.com/photos/10556215/pexels-photo-10556215.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 5, name: 'Noir Designer Blind Box', series: 'Designer',
     price: 'USD $38', amount: 38, category: 'designer', badge: '',
-    img: 'https://loremflickr.com/400/530/bracelet,jewelry?lock=5'
+    img: 'https://images.pexels.com/photos/8706563/pexels-photo-8706563.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 6, name: 'Luxury Blind Box', series: 'Luxury',
     price: 'USD $40', amount: 40, category: 'luxury', badge: 'Luxury',
-    img: 'https://loremflickr.com/400/530/diamond,ring?lock=6'
+    img: 'https://images.pexels.com/photos/5737315/pexels-photo-5737315.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 7, name: 'Y2K Limited Blind Box', series: 'Y2K Series',
     price: 'USD $35', amount: 35, category: 'y2k', badge: 'Y2K',
-    img: 'https://loremflickr.com/400/530/earrings,jewelry?lock=7'
+    img: 'https://images.pexels.com/photos/17298688/pexels-photo-17298688.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   },
   {
     id: 8, name: 'Starter Blind Box', series: 'Essentials',
     price: 'USD $22', amount: 22, category: 'healing', badge: '',
-    img: 'https://loremflickr.com/400/530/ring,silver?lock=8'
+    img: 'https://images.pexels.com/photos/2849742/pexels-photo-2849742.jpeg?auto=compress&cs=tinysrgb&w=400&h=530'
   }
 ];
 
