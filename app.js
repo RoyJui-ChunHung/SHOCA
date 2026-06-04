@@ -332,7 +332,9 @@ async function saveNewName() {
     if (FIREBASE_READY) {
       const user = auth.currentUser;
       await user.updateProfile({ displayName: val });
-      await db.collection('users').doc(user.uid).update({ name: val });
+      try {
+        await db.collection('users').doc(user.uid).set({ name: val }, { merge: true });
+      } catch (_) {}
     } else {
       const users = lsGetUsers();
       const u = users.find(u => u.email === currentUser.email);
