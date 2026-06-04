@@ -1,3 +1,13 @@
+/* ── XSS HELPER ── */
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 /* ── PRODUCT DATA ── */
 const products = [
   {
@@ -84,19 +94,25 @@ function renderProducts(containerSelector, filter = 'all', query = '') {
   container.innerHTML = filtered.map((p, i) => `
     <div class="product-card" style="animation-delay:${i * 0.06}s">
       <div class="product-img">
-        <img src="${p.img}" alt="${p.name}" loading="lazy">
-        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+        <img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">
+        ${p.badge ? `<span class="product-badge">${esc(p.badge)}</span>` : ''}
         <div class="product-overlay">
-          <button class="overlay-btn" onclick="addToCart('${p.name}','${p.price}',${p.amount})">Add to Bag</button>
+          <button class="overlay-btn" data-pid="${p.id}" onclick="addToCartById(this.dataset.pid)">Add to Bag</button>
         </div>
       </div>
       <div class="product-info">
-        <p class="product-series">${p.series}</p>
-        <p class="product-name">${p.name}</p>
-        <p class="product-price">${p.price}</p>
+        <p class="product-series">${esc(p.series)}</p>
+        <p class="product-name">${esc(p.name)}</p>
+        <p class="product-price">${esc(p.price)}</p>
       </div>
     </div>
   `).join('');
+}
+
+
+function addToCartById(id) {
+  const p = products.find(p => p.id === +id);
+  if (p) addToCart(p.name, p.price, p.amount);
 }
 
 
@@ -183,10 +199,10 @@ function handleSearch(query) {
   results.innerHTML = matches.map(p => `
     <div class="search-result-item">
       <div>
-        <p class="search-result-name">${p.name}</p>
-        <p class="search-result-price">${p.series} · ${p.price}</p>
+        <p class="search-result-name">${esc(p.name)}</p>
+        <p class="search-result-price">${esc(p.series)} · ${esc(p.price)}</p>
       </div>
-      <button class="search-result-add" onclick="addToCart('${p.name}','${p.price}',${p.amount}); toggleSearch()">Add</button>
+      <button class="search-result-add" data-pid="${p.id}" onclick="addToCartById(this.dataset.pid); toggleSearch()">Add</button>
     </div>
   `).join('');
 }
@@ -195,13 +211,169 @@ function handleSearch(query) {
 /* ══════════════════════════════════════
    ACCOUNT MODAL
 ══════════════════════════════════════ */
+let currentUser = null;
+
+function updateNavAccount() {
+  const btn     = document.getElementById('nav-account-btn');
+  const wrap    = document.getElementById('nav-account-wrap');
+  if (!btn || !wrap) return;
+  if (currentUser) {
+    btn.textContent = `Hi, ${currentUser.name.split(' ')[0]}`;
+    wrap.classList.add('logged-in');
+  } else {
+    btn.textContent = 'Account';
+    wrap.classList.remove('logged-in');
+  }
+}
+
+function handleAccountClick() {
+  if (!currentUser) {
+    document.getElementById('account-modal').classList.add('open');
+  }
+  /* when logged in, hover dropdown handles everything — no click needed */
+}
+
 function toggleAccount() {
+  handleAccountClick();
+}
+
+function showProfile() {
   const modal = document.getElementById('account-modal');
-  modal.classList.contains('open') ? closeAccount() : modal.classList.add('open');
+  document.getElementById('tab-login').style.display    = 'none';
+  document.getElementById('tab-register').style.display = 'none';
+  document.querySelector('.account-tabs').style.display = 'none';
+
+  let prof = document.getElementById('tab-profile');
+  if (!prof) {
+    prof = document.createElement('div');
+    prof.id = 'tab-profile';
+    modal.querySelector('.modal').appendChild(prof);
+  }
+
+  const wallet  = currentUser.wallet || 0;
+  const initial = esc(currentUser.name.charAt(0).toUpperCase());
+
+  prof.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-avatar">${initial}</div>
+      <div>
+        <p class="profile-name">${esc(currentUser.name)}</p>
+        <p class="profile-email">${esc(currentUser.email)}</p>
+      </div>
+    </div>
+
+    <div class="profile-list">
+
+      <div class="profile-row" onclick="toggleProfileSection('name')">
+        <span>Change Name</span><span class="profile-arrow">›</span>
+      </div>
+      <div class="profile-section" id="psec-name">
+        <div class="form-group" style="margin-bottom:12px">
+          <label>New Name</label>
+          <input id="new-name-input" type="text" placeholder="${esc(currentUser.name)}">
+        </div>
+        <p id="name-msg" class="profile-msg"></p>
+        <button class="btn btn-dark" style="width:100%;margin-top:4px" onclick="saveNewName()">Save</button>
+      </div>
+
+      <div class="profile-row" onclick="toggleProfileSection('password')">
+        <span>Reset Password</span><span class="profile-arrow">›</span>
+      </div>
+      <div class="profile-section" id="psec-password">
+        <div class="form-group" style="margin-bottom:12px">
+          <label>Current Password</label>
+          <input id="cur-pw-input" type="password" placeholder="••••••••">
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label>New Password</label>
+          <input id="new-pw-input" type="password" placeholder="At least 8 characters">
+        </div>
+        <p id="pw-msg" class="profile-msg"></p>
+        <button class="btn btn-dark" style="width:100%;margin-top:4px" onclick="saveNewPassword()">Update Password</button>
+      </div>
+
+      <div class="profile-row" style="cursor:default">
+        <span>Wallet</span>
+        <span class="profile-value">${esc(String(wallet))} Credits</span>
+      </div>
+
+      <div class="profile-row" style="cursor:default">
+        <span>Member Since</span>
+        <span class="profile-value">${new Date().getFullYear()}</span>
+      </div>
+
+    </div>
+  `;
+
+  prof.style.display = 'block';
+  modal.classList.add('open');
+}
+
+function toggleProfileSection(id) {
+  const sec = document.getElementById('psec-' + id);
+  if (!sec) return;
+  const isOpen = sec.classList.contains('open');
+  document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('open'));
+  if (!isOpen) sec.classList.add('open');
+}
+
+async function saveNewName() {
+  const val = document.getElementById('new-name-input').value.trim();
+  const msg = document.getElementById('name-msg');
+  if (!val) { showProfileMsg(msg, 'Please enter a name.', false); return; }
+  try {
+    const user = auth.currentUser;
+    await user.updateProfile({ displayName: val });
+    await db.collection('users').doc(user.uid).update({ name: val });
+    currentUser.name = val;
+    updateNavAccount();
+    showProfileMsg(msg, 'Name updated.', true);
+    document.querySelector('.profile-name').textContent = val;
+    document.querySelector('.profile-avatar').textContent = val.charAt(0).toUpperCase();
+  } catch (e) {
+    showProfileMsg(msg, 'Update failed. Please try again.', false);
+  }
+}
+
+async function saveNewPassword() {
+  const curPw = document.getElementById('cur-pw-input').value;
+  const newPw = document.getElementById('new-pw-input').value;
+  const msg   = document.getElementById('pw-msg');
+  if (newPw.length < 8) { showProfileMsg(msg, 'New password must be at least 8 characters.', false); return; }
+  try {
+    const user       = auth.currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, curPw);
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPw);
+    showProfileMsg(msg, 'Password updated.', true);
+    document.getElementById('cur-pw-input').value = '';
+    document.getElementById('new-pw-input').value = '';
+  } catch (e) {
+    const errMsg = e.code === 'auth/wrong-password' ? 'Current password is incorrect.' : 'Update failed.';
+    showProfileMsg(msg, errMsg, false);
+  }
+}
+
+function showProfileMsg(el, text, success) {
+  el.textContent  = text;
+  el.style.color  = success ? 'var(--gold)' : '#c0392b';
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+async function logoutAccount() {
+  await auth.signOut();
+  currentUser = null;
+  updateNavAccount();
+  closeAccount();
+  switchTab('login');
 }
 
 function closeAccount() {
   document.getElementById('account-modal').classList.remove('open');
+  const prof = document.getElementById('tab-profile');
+  if (prof) prof.style.display = 'none';
+  document.querySelector('.account-tabs').style.display = '';
 }
 
 function switchTab(tab) {
@@ -209,6 +381,56 @@ function switchTab(tab) {
   document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
   document.getElementById('tab-btn-login').classList.toggle('active',    tab === 'login');
   document.getElementById('tab-btn-register').classList.toggle('active', tab === 'register');
+  const prof = document.getElementById('tab-profile');
+  if (prof) prof.style.display = 'none';
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    closeAccount();
+  } catch (err) {
+    const msg = (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found')
+      ? 'Incorrect email or password.'
+      : 'Sign in failed. Please try again.';
+    showFormError('login-error', msg);
+  }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const name     = document.getElementById('reg-name').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!name || !email || !password) { showFormError('reg-error', 'Please fill in all fields.'); return; }
+  if (password.length < 8) { showFormError('reg-error', 'Password must be at least 8 characters.'); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    await cred.user.updateProfile({ displayName: name });
+    await db.collection('users').doc(cred.user.uid).set({
+      name,
+      email,
+      wallet: 0,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeAccount();
+  } catch (err) {
+    const msg = err.code === 'auth/email-already-in-use'
+      ? 'This email is already registered.'
+      : 'Registration failed. Please try again.';
+    showFormError('reg-error', msg);
+  }
+}
+
+function showFormError(id, msg) {
+  let el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3500);
 }
 
 
@@ -265,8 +487,8 @@ function updateCartUI() {
         </svg>
       </div>
       <div class="cart-item-info">
-        <p class="cart-item-name">${item.name}</p>
-        <p class="cart-item-price">${item.price}</p>
+        <p class="cart-item-name">${esc(item.name)}</p>
+        <p class="cart-item-price">${esc(item.price)}</p>
       </div>
       <button class="cart-item-remove" onclick="removeFromCart(${i})" aria-label="Remove">✕</button>
     </div>
@@ -276,7 +498,7 @@ function updateCartUI() {
 function openCheckout() {
   const total = cart.reduce((s, i) => s + i.amount, 0);
   document.getElementById('modal-items').innerHTML =
-    cart.map(i => `<div class="modal-item"><span>${i.name}</span><span>${i.price}</span></div>`).join('');
+    cart.map(i => `<div class="modal-item"><span>${esc(i.name)}</span><span>${esc(i.price)}</span></div>`).join('');
   document.getElementById('modal-total').textContent = 'USD $' + total.toLocaleString();
   document.getElementById('checkout-modal').classList.add('open');
   document.getElementById('cart-sidebar').classList.remove('open');
@@ -312,7 +534,7 @@ function filterProducts(category, btn) {
 /* ══════════════════════════════════════
    DRAW
 ══════════════════════════════════════ */
-function triggerDraw() {
+async function triggerDraw() {
   closeCheckout();
   cart = [];
   updateCartUI();
@@ -322,12 +544,34 @@ function triggerDraw() {
   const screen = document.getElementById('draw-screen');
 
   card.classList.remove('flipped');
-  screen.className = 'draw-screen';
+  screen.className = 'draw-screen open';
   document.getElementById('draw-result-msg').classList.remove('show');
   document.getElementById('draw-close').classList.remove('show');
-  document.getElementById('draw-hint').classList.remove('hidden');
-  document.getElementById('draw-text').textContent = 'Tap the card to reveal your fate';
+  document.getElementById('draw-hint').classList.add('hidden');
+  document.getElementById('draw-text').textContent = 'Drawing your fate…';
 
+  let prize;
+  try {
+    const drawFn = functions.httpsCallable('cardDraw');
+    const result = await drawFn({});
+    prize = result.data;
+  } catch (err) {
+    // Firebase 尚未部署時 fallback 到本地亂數
+    prize = localDraw();
+  }
+
+  document.getElementById('result-icon').textContent      = prize.icon;
+  document.getElementById('result-name').textContent      = prize.name;
+  document.getElementById('result-sub').textContent       = prize.sub;
+  document.getElementById('draw-result-msg').textContent  = prize.msg;
+  card.dataset.prizeTier      = prize.tier;
+  card.dataset.prizeParticles = JSON.stringify(prize.particles || null);
+
+  document.getElementById('draw-text').textContent = 'Tap the card to reveal your fate';
+  document.getElementById('draw-hint').classList.remove('hidden');
+}
+
+function localDraw() {
   const roll = Math.random() * 100;
   let cumulative = 0;
   let prize = prizes[prizes.length - 1];
@@ -335,16 +579,7 @@ function triggerDraw() {
     cumulative += p.chance;
     if (roll < cumulative) { prize = p; break; }
   }
-
-  document.getElementById('result-icon').textContent = prize.icon;
-  document.getElementById('result-name').textContent = prize.name;
-  document.getElementById('result-sub').textContent  = prize.sub;
-  document.getElementById('draw-result-msg').textContent = prize.msg;
-
-  card.dataset.prizeTier      = prize.tier;
-  card.dataset.prizeParticles = JSON.stringify(prize.particles);
-
-  screen.classList.add('open');
+  return prize;
 }
 
 function flipCard() {
@@ -533,6 +768,30 @@ function spawnCursorSparkle(x, y) {
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 900);
 }
+
+
+/* ══════════════════════════════════════
+   FIREBASE AUTH STATE
+══════════════════════════════════════ */
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      const data = snap.data();
+      currentUser = {
+        name:  data?.name  || user.displayName || 'Member',
+        email: user.email,
+        uid:   user.uid,
+        wallet: data?.wallet || 0
+      };
+    } catch {
+      currentUser = { name: user.displayName || 'Member', email: user.email, uid: user.uid, wallet: 0 };
+    }
+  } else {
+    currentUser = null;
+  }
+  updateNavAccount();
+});
 
 
 /* ══════════════════════════════════════
