@@ -209,9 +209,16 @@ function handleSearch(query) {
 
 
 /* ══════════════════════════════════════
-   ACCOUNT MODAL
+   ACCOUNT — 雙模式 (Firebase / localStorage)
 ══════════════════════════════════════ */
 let currentUser = null;
+
+/* ── localStorage helpers ── */
+function lsGetUsers()  { return JSON.parse(localStorage.getItem('shoca_users') || '[]'); }
+function lsSaveUsers(u){ localStorage.setItem('shoca_users', JSON.stringify(u)); }
+function lsGetUser()   { return JSON.parse(localStorage.getItem('shoca_user')  || 'null'); }
+function lsSaveUser(u) { localStorage.setItem('shoca_user',  JSON.stringify(u)); }
+function lsClearUser() { localStorage.removeItem('shoca_user'); }
 
 function updateNavAccount() {
   const btn     = document.getElementById('nav-account-btn');
@@ -322,10 +329,17 @@ async function saveNewName() {
   const msg = document.getElementById('name-msg');
   if (!val) { showProfileMsg(msg, 'Please enter a name.', false); return; }
   try {
-    const user = auth.currentUser;
-    await user.updateProfile({ displayName: val });
-    await db.collection('users').doc(user.uid).update({ name: val });
+    if (FIREBASE_READY) {
+      const user = auth.currentUser;
+      await user.updateProfile({ displayName: val });
+      await db.collection('users').doc(user.uid).update({ name: val });
+    } else {
+      const users = lsGetUsers();
+      const u = users.find(u => u.email === currentUser.email);
+      if (u) { u.name = val; lsSaveUsers(users); }
+    }
     currentUser.name = val;
+    lsSaveUser(currentUser);
     updateNavAccount();
     showProfileMsg(msg, 'Name updated.', true);
     document.querySelector('.profile-name').textContent = val;
@@ -341,15 +355,23 @@ async function saveNewPassword() {
   const msg   = document.getElementById('pw-msg');
   if (newPw.length < 8) { showProfileMsg(msg, 'New password must be at least 8 characters.', false); return; }
   try {
-    const user       = auth.currentUser;
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, curPw);
-    await user.reauthenticateWithCredential(credential);
-    await user.updatePassword(newPw);
+    if (FIREBASE_READY) {
+      const user       = auth.currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, curPw);
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPw);
+    } else {
+      const users = lsGetUsers();
+      const u = users.find(u => u.email === currentUser.email);
+      if (!u || u.password !== curPw) { showProfileMsg(msg, 'Current password is incorrect.', false); return; }
+      u.password = newPw;
+      lsSaveUsers(users);
+    }
     showProfileMsg(msg, 'Password updated.', true);
     document.getElementById('cur-pw-input').value = '';
     document.getElementById('new-pw-input').value = '';
   } catch (e) {
-    const errMsg = e.code === 'auth/wrong-password' ? 'Current password is incorrect.' : 'Update failed.';
+    const errMsg = (e.code === 'auth/wrong-password') ? 'Current password is incorrect.' : 'Update failed.';
     showProfileMsg(msg, errMsg, false);
   }
 }
@@ -362,8 +384,9 @@ function showProfileMsg(el, text, success) {
 }
 
 async function logoutAccount() {
-  await auth.signOut();
+  if (FIREBASE_READY) await auth.signOut();
   currentUser = null;
+  lsClearUser();
   updateNavAccount();
   closeAccount();
   switchTab('login');
@@ -389,14 +412,21 @@ async function handleLogin(e) {
   e.preventDefault();
   const email    = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
+
+  if (FIREBASE_READY) {
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      closeAccount();
+    } catch (err) {
+      showFormError('login-error', firebaseAuthMsg(err.code));
+    }
+  } else {
+    const user = lsGetUsers().find(u => u.email === email && u.password === password);
+    if (!user) { showFormError('login-error', 'Incorrect email or password.'); return; }
+    currentUser = { name: user.name, email: user.email, wallet: user.wallet || 0 };
+    lsSaveUser(currentUser);
+    updateNavAccount();
     closeAccount();
-  } catch (err) {
-    const msg = (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found')
-      ? 'Incorrect email or password.'
-      : 'Sign in failed. Please try again.';
-    showFormError('login-error', msg);
   }
 }
 
@@ -407,22 +437,46 @@ async function handleRegister(e) {
   const password = document.getElementById('reg-password').value;
   if (!name || !email || !password) { showFormError('reg-error', 'Please fill in all fields.'); return; }
   if (password.length < 8) { showFormError('reg-error', 'Password must be at least 8 characters.'); return; }
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(email, password);
-    await cred.user.updateProfile({ displayName: name });
-    await db.collection('users').doc(cred.user.uid).set({
-      name,
-      email,
-      wallet: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+
+  if (FIREBASE_READY) {
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await cred.user.updateProfile({ displayName: name });
+      await db.collection('users').doc(cred.user.uid).set({
+        name, email, wallet: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      closeAccount();
+    } catch (err) {
+      showFormError('reg-error', firebaseAuthMsg(err.code));
+    }
+  } else {
+    const users = lsGetUsers();
+    if (users.find(u => u.email === email)) { showFormError('reg-error', 'This email is already registered.'); return; }
+    users.push({ name, email, password, wallet: 0 });
+    lsSaveUsers(users);
+    currentUser = { name, email, wallet: 0 };
+    lsSaveUser(currentUser);
+    updateNavAccount();
     closeAccount();
-  } catch (err) {
-    const msg = err.code === 'auth/email-already-in-use'
-      ? 'This email is already registered.'
-      : 'Registration failed. Please try again.';
-    showFormError('reg-error', msg);
   }
+}
+
+function firebaseAuthMsg(code) {
+  const map = {
+    'auth/invalid-api-key':        'Firebase not configured — fill in firebase-config.js.',
+    'auth/configuration-not-found':'Firebase project not found — check firebase-config.js.',
+    'auth/operation-not-allowed':  'Email/Password sign-in not enabled in Firebase Console.',
+    'auth/email-already-in-use':   'This email is already registered.',
+    'auth/invalid-email':          'Invalid email address.',
+    'auth/weak-password':          'Password must be at least 8 characters.',
+    'auth/user-not-found':         'Incorrect email or password.',
+    'auth/wrong-password':         'Incorrect email or password.',
+    'auth/invalid-credential':     'Incorrect email or password.',
+    'auth/network-request-failed': 'Network error — check your internet connection.',
+    'auth/too-many-requests':      'Too many attempts. Please wait and try again.',
+  };
+  return map[code] || `Sign-in error (${code})`;
 }
 
 function showFormError(id, msg) {
@@ -552,11 +606,14 @@ async function triggerDraw() {
 
   let prize;
   try {
-    const drawFn = functions.httpsCallable('cardDraw');
-    const result = await drawFn({});
-    prize = result.data;
+    if (FIREBASE_READY && currentUser?.uid) {
+      const drawFn = functions.httpsCallable('cardDraw');
+      const result = await drawFn({});
+      prize = result.data;
+    } else {
+      prize = localDraw();
+    }
   } catch (err) {
-    // Firebase 尚未部署時 fallback 到本地亂數
     prize = localDraw();
   }
 
@@ -771,27 +828,32 @@ function spawnCursorSparkle(x, y) {
 
 
 /* ══════════════════════════════════════
-   FIREBASE AUTH STATE
+   AUTH STATE INIT
 ══════════════════════════════════════ */
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    try {
-      const snap = await db.collection('users').doc(user.uid).get();
-      const data = snap.data();
-      currentUser = {
-        name:  data?.name  || user.displayName || 'Member',
-        email: user.email,
-        uid:   user.uid,
-        wallet: data?.wallet || 0
-      };
-    } catch {
-      currentUser = { name: user.displayName || 'Member', email: user.email, uid: user.uid, wallet: 0 };
+if (FIREBASE_READY) {
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      try {
+        const snap = await db.collection('users').doc(user.uid).get();
+        const data = snap.data();
+        currentUser = {
+          name:   data?.name   || user.displayName || 'Member',
+          email:  user.email,
+          uid:    user.uid,
+          wallet: data?.wallet || 0
+        };
+      } catch {
+        currentUser = { name: user.displayName || 'Member', email: user.email, uid: user.uid, wallet: 0 };
+      }
+    } else {
+      currentUser = null;
     }
-  } else {
-    currentUser = null;
-  }
-  updateNavAccount();
-});
+    updateNavAccount();
+  });
+} else {
+  // localStorage mode: 從本機還原登入狀態
+  currentUser = lsGetUser();
+}
 
 
 /* ══════════════════════════════════════

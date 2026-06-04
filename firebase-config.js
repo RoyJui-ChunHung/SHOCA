@@ -11,8 +11,18 @@ const firebaseConfig = {
   appId:             "FILL_IN_APP_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
+// 自動偵測是否已填入真實設定
+const FIREBASE_READY = !firebaseConfig.apiKey.startsWith('FILL_IN');
 
-const auth      = firebase.auth();
-const db        = firebase.firestore();
-const functions = firebase.functions();
+let auth, db, functions;
+
+if (FIREBASE_READY) {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    auth      = firebase.auth();
+    db        = firebase.firestore();
+    functions = firebase.functions();
+  } catch (e) {
+    console.warn('Firebase init failed:', e.message);
+  }
+}
