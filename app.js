@@ -442,10 +442,13 @@ async function handleRegister(e) {
     try {
       const cred = await auth.createUserWithEmailAndPassword(email, password);
       await cred.user.updateProfile({ displayName: name });
-      await db.collection('users').doc(cred.user.uid).set({
-        name, email, wallet: 0,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      // 寫入 Firestore（若規則尚未部署則靜默失敗，不影響帳號建立）
+      try {
+        await db.collection('users').doc(cred.user.uid).set({
+          name, email, wallet: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (_) {}
       closeAccount();
     } catch (err) {
       showFormError('reg-error', firebaseAuthMsg(err.code));
